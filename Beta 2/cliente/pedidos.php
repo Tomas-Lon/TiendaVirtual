@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 $pdo = getConnection();
 $cliente_id = $_SESSION['cliente_id'];
 
-// Mapeo de colores para estados (puede compartirse más tarde)
+// Mapeo de colores para estados
 $estados_color = [
     'borrador' => 'secondary',
     'pendiente' => 'warning',
@@ -25,52 +25,74 @@ $estados_color = [
     'cancelado' => 'danger'
 ];
 
-// Parámetros de búsqueda y paginación
-$search = trim($_GET['search'] ?? '');
-$fecha_desde = $_GET['fecha_desde'] ?? '';
-$fecha_hasta = $_GET['fecha_hasta'] ?? '';
-$page = isset($_GET['page']) && is_numeric($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
+// Variables para mensajes
+$error_message = '';
+$pedidos = [];
+$total_pedidos = 0;
+$total_pages = 1;
 
-// Construir WHERE dinámico y parámetros
-$whereParts = ['p.cliente_id = :cliente_id'];
-$params = ['cliente_id' => $cliente_id];
+try {
+    // Parámetros de búsqueda y paginación
+    $search = trim($_GET['search'] ?? '');
+    $fecha_desde = $_GET['fecha_desde'] ?? '';
+    $fecha_hasta = $_GET['fecha_hasta'] ?? '';
+    $page = isset($_GET['page']) && is_numeric($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
 
-if ($search !== '') {
-    $whereParts[] = '(p.numero_documento LIKE :q OR p.observaciones LIKE :q)';
-    $params['q'] = '%' . $search . '%';
+    // Validar fechas
+    if ($fecha_desde && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_desde)) {
+        throw new Exception('Formato de fecha desde inválido');
+    }
+    if ($fecha_hasta && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_hasta)) {
+        throw new Exception('Formato de fecha hasta inválido');
+    }
+    if ($fecha_desde && $fecha_hasta && $fecha_desde > $fecha_hasta) {
+        throw new Exception('La fecha desde no puede ser mayor que la fecha hasta');
+    }
+
+    // Construir WHERE dinámico y parámetros
+    $whereParts = ['p.cliente_id = ?'];
+    $params = [$cliente_id];
+
+    if ($search !== '') {
+        $whereParts[] = '(p.numero_documento LIKE ? OR p.observaciones LIKE ?)';
+        $params[] = '%' . $search . '%';
+        $params[] = '%' . $search . '%';
+    }
+    if ($fecha_desde !== '') {
+        $whereParts[] = 'DATE(p.fecha_pedido) >= ?';
+        $params[] = $fecha_desde;
+    }
+    if ($fecha_hasta !== '') {
+        $whereParts[] = 'DATE(p.fecha_pedido) <= ?';
+        $params[] = $fecha_hasta;
+    }
+
+    $whereSql = 'WHERE ' . implode(' AND ', $whereParts);
+
+    // Contar total de pedidos del cliente con filtros
+    $countSql = "SELECT COUNT(*) FROM pedidos p " . $whereSql;
+    $countStmt = $pdo->prepare($countSql);
+    $countStmt->execute($params);
+    $total_pedidos = (int)$countStmt->fetchColumn();
+    $total_pages = max(1, (int)ceil(max(1, $total_pedidos) / $limit));
+
+    // Traer pedidos con número de items
+    $sql = "SELECT p.id, p.numero_documento, p.fecha_pedido, p.estado, p.total,
+                (SELECT COUNT(*) FROM detalle_pedidos dp WHERE dp.pedido_id = p.id) AS total_items
+            FROM pedidos p " . $whereSql . " ORDER BY p.fecha_pedido DESC LIMIT ? OFFSET ?";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(array_merge($params, [$limit, $offset]));
+    $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    error_log('Error en pedidos.php: ' . $e->getMessage());
+    $error_message = 'Error al cargar los pedidos. Por favor, intente nuevamente.';
+} catch (Exception $e) {
+    $error_message = $e->getMessage();
 }
-if ($fecha_desde !== '') {
-    $whereParts[] = 'DATE(p.fecha_pedido) >= :fecha_desde';
-    $params['fecha_desde'] = $fecha_desde;
-}
-if ($fecha_hasta !== '') {
-    $whereParts[] = 'DATE(p.fecha_pedido) <= :fecha_hasta';
-    $params['fecha_hasta'] = $fecha_hasta;
-}
-
-$whereSql = count($whereParts) ? ('WHERE ' . implode(' AND ', $whereParts)) : '';
-
-// Contar total de pedidos del cliente con filtros
-$countSql = "SELECT COUNT(*) FROM pedidos p " . $whereSql;
-$countStmt = $pdo->prepare($countSql);
-$countStmt->execute($params);
-$total_pedidos = (int)$countStmt->fetchColumn();
-$total_pages = max(1, (int)ceil(max(1, $total_pedidos) / $limit));
-
-// Traer pedidos (con número de items)
-$sql = "SELECT p.id, p.numero_documento, p.fecha_pedido, p.estado, p.total,
-            (SELECT COUNT(*) FROM detalle_pedidos dp WHERE dp.pedido_id = p.id) AS total_items
-        FROM pedidos p " . $whereSql . " ORDER BY p.fecha_pedido DESC LIMIT :offset, :limit";
-$stmt = $pdo->prepare($sql);
-foreach ($params as $k => $v) {
-    $stmt->bindValue(':' . $k, $v);
-}
-$stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-$stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-$stmt->execute();
-$pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Renderizar vista
 ob_start();
@@ -80,6 +102,13 @@ ob_start();
     <h2>Mis Pedidos</h2>
     <a href="productos.php" class="btn btn-outline-primary"><i class="fas fa-box-open"></i> Ver Catálogo</a>
 </div>
+
+<?php if ($error_message): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error_message) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
 <div class="card mb-4">
     <div class="card-body p-3">
@@ -96,8 +125,13 @@ ob_start();
                 <label class="form-label">Hasta</label>
                 <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control" value="<?php echo htmlspecialchars($fecha_hasta); ?>">
             </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            <div class="col-md-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+                <a href="pedidos.php" class="btn btn-outline-secondary" title="Limpiar filtros">
+                    <i class="fas fa-times"></i>
+                </a>
             </div>
         </form>
     </div>

@@ -56,6 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if ($pedidoId <= 0 || $fechaProgramada === '') {
                 throw new Exception('Complete los campos obligatorios.');
             }
+            if (!$direccionEntregaId || $direccionEntregaId <= 0) {
+                throw new Exception('Debe seleccionar una dirección de entrega.');
+            }
             if (!in_array($estado, $estadosPermitidos, true)) {
                 throw new Exception('Estado no válido.');
             }

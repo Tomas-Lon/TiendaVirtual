@@ -84,8 +84,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             case 'delete':
                 try {
+                    // Verificar que no se intente eliminar el usuario actual
+                    $usuario_a_eliminar = $_POST['id'];
+                    $check_stmt = $pdo->prepare("SELECT usuario FROM credenciales WHERE id = ?");
+                    $check_stmt->execute([$usuario_a_eliminar]);
+                    $usuario_data = $check_stmt->fetch();
+                    
+                    if ($usuario_data && $usuario_data['usuario'] === $_SESSION['usuario']) {
+                        $message = 'No puedes eliminar tu propio usuario mientras estás conectado';
+                        $message_type = 'warning';
+                        break;
+                    }
+                    
                     $stmt = $pdo->prepare("DELETE FROM credenciales WHERE id = ?");
-                    $stmt->execute([$_POST['id']]);
+                    $stmt->execute([$usuario_a_eliminar]);
                     $message = 'Usuario eliminado exitosamente';
                     $message_type = 'success';
                 } catch (PDOException $e) {
@@ -268,7 +280,7 @@ ob_start();
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-danger" 
-                                        onclick="deleteUsuario(<?php echo $usuario['id']; ?>)">
+                                        onclick="deleteUsuario(<?php echo $usuario['id']; ?>, '<?php echo addslashes($usuario['usuario']); ?>')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -366,67 +378,74 @@ ob_start();
 $content = ob_get_clean();
 
 // JavaScript adicional
-$additionalJS = '
+$usuario_actual = addslashes($_SESSION['usuario'] ?? '');
+$additionalJS =  <<<EOT
 <script>
 function toggleAssociation() {
-    const tipo = document.getElementById("tipo").value;
-    const empleadoSelect = document.getElementById("empleado_select");
-    const clienteSelect = document.getElementById("cliente_select");
+    const tipo = document.getElementById('tipo').value;
+    const empleadoSelect = document.getElementById('empleado_select');
+    const clienteSelect = document.getElementById('cliente_select');
     
-    empleadoSelect.style.display = tipo === "empleado" ? "block" : "none";
-    clienteSelect.style.display = tipo === "cliente" ? "block" : "none";
+    empleadoSelect.style.display = tipo === 'empleado' ? 'block' : 'none';
+    clienteSelect.style.display = tipo === 'cliente' ? 'block' : 'none';
     
-    if (tipo !== "empleado") {
-        document.getElementById("empleado_id").value = "";
+    if (tipo !== 'empleado') {
+        document.getElementById('empleado_id').value = '';
     }
-    if (tipo !== "cliente") {
-        document.getElementById("cliente_id").value = "";
+    if (tipo !== 'cliente') {
+        document.getElementById('cliente_id').value = '';
     }
 }
 
 function editUsuario(usuario) {
-    document.getElementById("usuarioAction").value = "edit";
-    document.getElementById("usuarioId").value = usuario.id;
-    document.getElementById("usuario").value = usuario.usuario;
-    document.getElementById("contrasena").value = "";
-    document.getElementById("contrasena").required = false;
-    document.getElementById("contrasenaHelp").style.display = "block";
-    document.getElementById("tipo").value = usuario.tipo;
-    document.getElementById("empleado_id").value = usuario.empleado_id || "";
-    document.getElementById("cliente_id").value = usuario.cliente_id || "";
-    document.getElementById("activo").checked = usuario.activo == 1;
+    document.getElementById('usuarioAction').value = 'edit';
+    document.getElementById('usuarioId').value = usuario.id;
+    document.getElementById('usuario').value = usuario.usuario;
+    document.getElementById('contrasena').value = '';
+    document.getElementById('contrasena').required = false;
+    document.getElementById('contrasenaHelp').style.display = 'block';
+    document.getElementById('tipo').value = usuario.tipo;
+    document.getElementById('empleado_id').value = usuario.empleado_id || '';
+    document.getElementById('cliente_id').value = usuario.cliente_id || '';
+    document.getElementById('activo').checked = usuario.activo == 1;
     
     toggleAssociation();
     
-    document.getElementById("usuarioModalLabel").textContent = "Editar Usuario";
-    new bootstrap.Modal(document.getElementById("usuarioModal")).show();
+    document.getElementById('usuarioModalLabel').textContent = 'Editar Usuario';
+    new bootstrap.Modal(document.getElementById('usuarioModal')).show();
 }
 
-function deleteUsuario(id) {
-    if (confirm("¿Estás seguro de que quieres eliminar este usuario?")) {
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.innerHTML = `
-            <input type="hidden" name="action" value="delete">
-            <input type="hidden" name="id" value="${id}">
-        `;
+function deleteUsuario(id, usuario) {
+    // Verificar si es el usuario actual
+    const usuarioActual = '$usuario_actual';
+    if (usuario === usuarioActual) {
+        alert('No puedes eliminar tu propio usuario mientras estas conectado.');
+        return;
+    }
+    
+    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = '<input type=\"hidden\" name=\"action\" value=\"delete\">' +
+                         '<input type=\"hidden\" name=\"id\" value=\"' + id + '\">';
         document.body.appendChild(form);
         form.submit();
     }
 }
 
 // Resetear modal al cerrarse
-document.getElementById("usuarioModal").addEventListener("hidden.bs.modal", function() {
-    document.getElementById("usuarioForm").reset();
-    document.getElementById("usuarioAction").value = "add";
-    document.getElementById("usuarioId").value = "";
-    document.getElementById("usuarioModalLabel").textContent = "Nuevo Usuario";
-    document.getElementById("contrasena").required = true;
-    document.getElementById("contrasenaHelp").style.display = "none";
-    document.getElementById("activo").checked = true;
+document.getElementById('usuarioModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('usuarioForm').reset();
+    document.getElementById('usuarioAction').value = 'add';
+    document.getElementById('usuarioId').value = '';
+    document.getElementById('usuarioModalLabel').textContent = 'Nuevo Usuario';
+    document.getElementById('contrasena').required = true;
+    document.getElementById('contrasenaHelp').style.display = 'none';
+    document.getElementById('activo').checked = true;
     toggleAssociation();
 });
-</script>';
+</script>
+EOT;
 
 // Renderizar la página
 LayoutManager::renderAdminPage('Gestión de Usuarios', $content, '', $additionalJS);
