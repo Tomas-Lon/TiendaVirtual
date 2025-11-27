@@ -78,10 +78,14 @@ try {
     $total_pedidos = (int)$countStmt->fetchColumn();
     $total_pages = max(1, (int)ceil(max(1, $total_pedidos) / $limit));
 
-    // Traer pedidos con número de items
+    // Traer pedidos con número de items y comprobante de entrega
     $sql = "SELECT p.id, p.numero_documento, p.fecha_pedido, p.estado, p.total,
-                (SELECT COUNT(*) FROM detalle_pedidos dp WHERE dp.pedido_id = p.id) AS total_items
-            FROM pedidos p " . $whereSql . " ORDER BY p.fecha_pedido DESC LIMIT ? OFFSET ?";
+                (SELECT COUNT(*) FROM detalle_pedidos dp WHERE dp.pedido_id = p.id) AS total_items,
+                comp.pdf_path as comprobante_pdf, comp.codigo_qr as codigo_comprobante
+            FROM pedidos p 
+            LEFT JOIN entregas ent ON ent.pedido_id = p.id
+            LEFT JOIN comprobantes_entrega comp ON comp.entrega_id = ent.id
+            " . $whereSql . " ORDER BY p.fecha_pedido DESC LIMIT ? OFFSET ?";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute(array_merge($params, [$limit, $offset]));
@@ -163,7 +167,16 @@ ob_start();
                                 <td><span class="badge bg-<?php echo $estados_color[$pedido['estado']] ?? 'secondary'; ?>"><?php echo ucfirst(str_replace('_',' ',$pedido['estado'])); ?></span></td>
                                 <td class="text-end"><strong>$<?php echo number_format($pedido['total'], 0, ',', '.'); ?></strong></td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-primary" onclick="verDetalle(<?php echo (int)$pedido['id']; ?>)"><i class="fas fa-eye"></i> Ver</button>
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="verDetalle(<?php echo (int)$pedido['id']; ?>)" title="Ver detalle">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
+                                        <?php if ($pedido['estado'] === 'entregado' && !empty($pedido['comprobante_pdf'])): ?>
+                                        <button class="btn btn-sm btn-outline-success" onclick="window.open('<?php echo htmlspecialchars($pedido['comprobante_pdf']); ?>', '_blank')" title="Ver comprobante de entrega">
+                                            <i class="fas fa-file-pdf"></i> Comprobante
+                                        </button>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

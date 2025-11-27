@@ -1,80 +1,67 @@
 <?php
 session_start();
-require_once '../../config/database.php';
 
-// Verificar autenticación
-if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] !== 'empleado' || $_SESSION['cargo'] !== 'admin') {
+// Verificar que el usuario sea cliente
+if (!isset($_SESSION['usuario']) || $_SESSION['tipo'] !== 'cliente') {
     header('Location: ../../auth/login.php');
     exit;
 }
 
+require_once '../../config/database.php';
+
 $pedido_id = $_GET['id'] ?? 0;
 
 if (!$pedido_id) {
-    die('ID de pedido no válido');
+    die('ID de cotización no válido');
 }
 
 try {
     $pdo = getConnection();
+    $cliente_id = $_SESSION['cliente_id'];
     
-    // Obtener información del pedido
+    // Obtener información del pedido/cotización
     $stmt = $pdo->prepare("
         SELECT p.*, c.nombre as cliente_nombre, c.email as cliente_email, 
                c.telefono as cliente_telefono, c.numero_documento as cliente_documento,
                c.tipo_documento as cliente_tipo_documento,
-               e.nombre as empleado_nombre,
                dc.direccion, dc.ciudad, dc.departamento, dc.codigo_postal
         FROM pedidos p 
         JOIN clientes c ON p.cliente_id = c.id 
-        LEFT JOIN empleados e ON p.empleado_id = e.id
         LEFT JOIN direcciones_clientes dc ON p.direccion_entrega_id = dc.id
-        WHERE p.id = ?
+        WHERE p.id = ? AND p.cliente_id = ? AND p.estado = 'borrador'
     ");
-    $stmt->execute([$pedido_id]);
+    $stmt->execute([$pedido_id, $cliente_id]);
     $pedido = $stmt->fetch();
     
     if (!$pedido) {
-        die('Pedido no encontrado');
+        die('Cotización no encontrada o no tiene acceso');
     }
     
-    // Obtener detalles del pedido
+    // Obtener detalles del pedido (incluye grupo)
     $stmt = $pdo->prepare("
-        SELECT dp.*, pr.codigo, pr.descripcion as producto_descripcion
+        SELECT dp.*, pr.codigo, pr.descripcion as producto_descripcion, pr.grupo_id, gp.nombre AS grupo_nombre
         FROM detalle_pedidos dp
         JOIN productos pr ON dp.producto_id = pr.id
+        LEFT JOIN grupos_productos gp ON pr.grupo_id = gp.id
         WHERE dp.pedido_id = ?
         ORDER BY dp.id
     ");
-        // Obtener detalles del pedido (incluye grupo)
-        $stmt = $pdo->prepare("
-            SELECT dp.*, pr.codigo, pr.descripcion as producto_descripcion, pr.grupo_id, gp.nombre AS grupo_nombre
-            FROM detalle_pedidos dp
-            JOIN productos pr ON dp.producto_id = pr.id
-            LEFT JOIN grupos_productos gp ON pr.grupo_id = gp.id
-            WHERE dp.pedido_id = ?
-            ORDER BY dp.id
-        ");
-        $stmt->execute([$pedido_id]);
-        $detalles = $stmt->fetchAll();
+    $stmt->execute([$pedido_id]);
+    $detalles = $stmt->fetchAll();
 
-        // Obtener descuentos por grupo asignados al cliente
-        $stmt = $pdo->prepare("SELECT dc.grupo_id, gp.nombre AS grupo_nombre, dc.porcentaje_descuento
-                                FROM descuentos_clientes dc
-                                JOIN grupos_productos gp ON gp.id = dc.grupo_id
-                                WHERE dc.cliente_id = ? AND dc.activo = 1 AND gp.activo = 1
-                                ORDER BY gp.nombre");
-        $stmt->execute([$pedido['cliente_id']]);
-        $descuentos_cliente = $stmt->fetchAll();
-    
-    $estados = [
-        'borrador' => 'Borrador',
-        'confirmado' => 'Confirmado',a
-        'en_preparacion' => 'En Preparación',
-        'listo_envio' => 'Listo para Envío',
-        'enviado' => 'Enviado',
-        'entregado' => 'Entregado',
-        'cancelado' => 'Cancelado'
-    ];
+    // Obtener solo los descuentos por grupo que se usaron en esta cotización
+    $stmt = $pdo->prepare("SELECT DISTINCT gp.nombre AS grupo_nombre, dc.porcentaje_descuento
+                            FROM detalle_pedidos dp
+                            JOIN productos pr ON dp.producto_id = pr.id
+                            JOIN grupos_productos gp ON pr.grupo_id = gp.id
+                            JOIN descuentos_clientes dc ON dc.grupo_id = gp.id AND dc.cliente_id = ?
+                            WHERE dp.pedido_id = ? 
+                            AND dc.activo = 1 
+                            AND gp.activo = 1
+                            AND (dp.descuento_porcentaje > 0 OR dp.descuento_monto > 0)
+                            ORDER BY gp.nombre");
+    $stmt->execute([$pedido['cliente_id'], $pedido_id]);
+    $descuentos_cliente = $stmt->fetchAll();
     
 } catch (Exception $e) {
     die('Error: ' . $e->getMessage());
@@ -85,7 +72,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedido <?php echo htmlspecialchars($pedido['numero_documento']); ?></title>
+    <title>Cotización <?php echo htmlspecialchars($pedido['numero_documento']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * {
@@ -131,20 +118,20 @@ try {
             color: #555;
         }
         
-        .pedido-info {
+        .cotizacion-info {
             margin-bottom: 15px;
             padding: 8px 12px;
             border: 2px solid #000;
             background-color: #f5f5f5;
         }
         
-        .pedido-info h4 {
+        .cotizacion-info h4 {
             font-size: 14pt;
             margin-bottom: 5px;
             font-weight: bold;
         }
         
-        .pedido-info p {
+        .cotizacion-info p {
             margin: 2px 0;
             font-size: 10pt;
         }
@@ -296,6 +283,27 @@ try {
             margin-top: 0;
         }
         
+        .validity-note {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+        }
+        
+        .validity-note h6 {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        .validity-note p {
+            font-size: 10pt;
+            color: #856404;
+            margin: 3px 0;
+        }
+        
         @media screen {
             .no-print {
                 display: block !important;
@@ -403,16 +411,15 @@ try {
             <small>Suministros Industriales y Técnicos</small>
         </div>
         
-        <div class="pedido-info">
+        <div class="cotizacion-info">
             <div class="row">
                 <div class="col-md-6">
-                    <h4>PEDIDO <?php echo htmlspecialchars($pedido['numero_documento']); ?></h4>
-                    <p><strong>Estado:</strong> <?php echo $estados[$pedido['estado']]; ?></p>
+                    <h4>COTIZACIÓN <?php echo htmlspecialchars($pedido['numero_documento']); ?></h4>
+                    <p><strong>Estado:</strong> <span style="background: #6c757d; color: white; padding: 2px 8px; border-radius: 3px;">BORRADOR</span></p>
                     <p><strong>Fecha:</strong> <?php echo date('d/m/Y H:i', strtotime($pedido['created_at'])); ?></p>
-                    <p><strong>Fecha Entrega:</strong> <?php echo $pedido['fecha_entrega_estimada'] ? date('d/m/Y', strtotime($pedido['fecha_entrega_estimada'])) : 'No definida'; ?></p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <p><strong>Empleado:</strong><br><?php echo htmlspecialchars($pedido['empleado_nombre'] ?? 'No asignado'); ?></p>
+                    <p><strong>Válida hasta:</strong><br><?php echo date('d/m/Y', strtotime('+15 days', strtotime($pedido['created_at']))); ?></p>
                 </div>
             </div>
         </div>
@@ -445,7 +452,7 @@ try {
             </div>
         </div>
         
-        <h5>PRODUCTOS</h5>
+        <h5>PRODUCTOS COTIZADOS</h5>
         <table>
             <thead>
                 <tr>
@@ -462,7 +469,7 @@ try {
             <tbody>
                 <?php if (empty($detalles)): ?>
                     <tr>
-                        <td colspan="8" class="text-center">No hay productos en este pedido</td>
+                        <td colspan="8" class="text-center">No hay productos en esta cotización</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($detalles as $detalle): 
@@ -511,12 +518,12 @@ try {
         </table>
         
         <div class="total-final">
-            TOTAL: <span>$<?php echo number_format($pedido['total'], 0, '.', ','); ?></span>
+            TOTAL COTIZADO: <span>$<?php echo number_format($pedido['total'], 0, '.', ','); ?></span>
         </div>
 
         <?php if (!empty($descuentos_cliente)): ?>
         <div class="info-box">
-            <h6>Descuentos asignados al cliente por grupo</h6>
+            <h6>Descuentos asignados por grupo</h6>
             <ul>
                 <?php foreach ($descuentos_cliente as $dc): ?>
                     <li><?php echo htmlspecialchars($dc['grupo_nombre']); ?>: <?php echo number_format($dc['porcentaje_descuento'], 2); ?>%</li>
@@ -525,62 +532,12 @@ try {
         </div>
         <?php endif; ?>
         
-        <?php
-        // Obtener información de entrega y comprobante si el pedido está entregado
-        if ($pedido['estado'] === 'entregado') {
-            $stmt_comprobante = $pdo->prepare("
-                SELECT c.*, e.fecha_entrega_real, e.receptor_nombre as receptor_nombre_entrega
-                FROM entregas e
-                LEFT JOIN comprobantes_entrega c ON c.entrega_id = e.id
-                WHERE e.pedido_id = ?
-                ORDER BY e.id DESC
-                LIMIT 1
-            ");
-            $stmt_comprobante->execute([$pedido_id]);
-            $comprobante_info = $stmt_comprobante->fetch();
-            
-            if ($comprobante_info):
-        ?>
-        <div class="info-box" style="background-color: #e8f5e9; border-color: #27ae60;">
-            <h6 style="color: #27ae60;"><i class="fas fa-check-circle"></i> Comprobante de Entrega</h6>
-            <table class="table table-sm table-borderless" style="margin-bottom: 0;">
-                <tr>
-                    <td style="width: 30%;"><strong>Fecha de Entrega:</strong></td>
-                    <td><?php echo $comprobante_info['fecha_entrega_real'] ? date('d/m/Y H:i', strtotime($comprobante_info['fecha_entrega_real'])) : 'N/A'; ?></td>
-                </tr>
-                <tr>
-                    <td><strong>Recibido por:</strong></td>
-                    <td><?php echo htmlspecialchars($comprobante_info['receptor_nombre'] ?? $comprobante_info['receptor_nombre_entrega'] ?? 'N/A'); ?></td>
-                </tr>
-                <?php if ($comprobante_info['receptor_documento']): ?>
-                <tr>
-                    <td><strong>Documento:</strong></td>
-                    <td><?php echo htmlspecialchars($comprobante_info['receptor_documento']); ?></td>
-                </tr>
-                <?php endif; ?>
-                <?php if ($comprobante_info['codigo_qr']): ?>
-                <tr>
-                    <td><strong>Código QR:</strong></td>
-                    <td><code style="background: #fff; padding: 2px 6px; border-radius: 3px;"><?php echo htmlspecialchars($comprobante_info['codigo_qr']); ?></code></td>
-                </tr>
-                <?php endif; ?>
-                <?php if ($comprobante_info['pdf_path']): ?>
-                <tr>
-                    <td colspan="2">
-                        <div class="no-print" style="margin-top: 10px;">
-                            <a href="<?php echo htmlspecialchars($comprobante_info['pdf_path']); ?>" target="_blank" class="btn btn-success btn-sm">
-                                <i class="fas fa-file-pdf"></i> Ver Comprobante de Entrega
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                <?php endif; ?>
-            </table>
+        <div class="validity-note">
+            <h6>⚠ NOTA IMPORTANTE</h6>
+            <p><strong>• Esta es una cotización preliminar.</strong> Los precios pueden estar sujetos a cambios.</p>
+            <p><strong>• Validez:</strong> 15 días calendario desde la fecha de emisión.</p>
+            <p><strong>• Para confirmar:</strong> Contacte con nuestro equipo de ventas para convertir esta cotización en pedido formal.</p>
         </div>
-        <?php 
-            endif;
-        }
-        ?>
         
         <?php if ($pedido['observaciones']): ?>
         <div class="observaciones">
@@ -592,6 +549,13 @@ try {
         <div class="text-center mt-5 no-print">
             <button class="btn btn-primary" onclick="window.print()">Imprimir</button>
             <button class="btn btn-secondary" onclick="window.close()">Cerrar</button>
+        </div>
+        
+        <!-- Pie de página -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #999; font-size: 12px;">
+            <p>Esta cotización es un documento preliminar y no representa un compromiso de compra.</p>
+            <p>Para cualquier consulta, contacta con nuestro equipo de ventas.</p>
+            <p>&copy; <?php echo date('Y'); ?> SolTecnInd. Todos los derechos reservados.</p>
         </div>
     </div>
     

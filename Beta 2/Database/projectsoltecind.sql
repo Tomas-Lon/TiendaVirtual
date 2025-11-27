@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-11-2025 a las 23:28:59
+-- Tiempo de generación: 25-11-2025 a las 01:07:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -58,7 +58,7 @@ INSERT INTO `clientes` (`id`, `nombre`, `numero_documento`, `tipo_documento`, `e
 (8, 'Ferretería El Progreso', '52345678901', 'CC', 'ferreteriaprogreso@hotmail.com', '3209876543', 'Carrera 8 # 12-30', 'Manizales', 'Dora Alicia Mendoza', 3, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (9, 'Distribuidora de Tuberías del Caribe', '800678901-2', 'NIT', 'distribuidoratuberias@gmail.com', '6018901234', 'Calle 70 # 45-18', 'Cartagena', 'Ing. Patricia Herrera', 2, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (10, 'Mantenimiento Integral PYME', '900789012-3', 'NIT', 'mantenimientointegral@empresa.com', '6019012345', 'Avenida El Dorado # 68-90', 'Bogotá', 'Técnico Francisco López', 4, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
-(13, 'Cliente de Prueba', '123456', 'NIT', 'cliente@prueba.com', '3001234567', 'Calle 72 # 10-15', 'Cali', 'Ing. Pedro Martínez', NULL, 1, '2025-08-24 03:45:54', '2025-10-16 16:00:16'),
+(13, 'Cliente de Pruebaasdasdasdasd', '123456', 'NIT', 'cliente@prueba.com', '3001234567', 'Calle 72 # 10-15', 'Cali', 'Ing. Pedro Martínez', NULL, 1, '2025-08-24 03:45:54', '2025-11-21 20:11:37'),
 (14, 'Tomas Londoño', '1092852724', 'CC', 'tomaslonfake@gmail.com', '3008918889', 'Terra Quimbaya Etapa 2', 'Calarca', 'Tomas Londoño', NULL, 1, '2025-11-19 18:10:07', '2025-11-19 18:10:07');
 
 -- --------------------------------------------------------
@@ -99,7 +99,8 @@ INSERT INTO `comprobantes_entrega` (`id`, `entrega_id`, `receptor_nombre`, `rece
 (6, 6, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 0x2f70726f6a6563745469656e64615669727475616c2f75706c6f6164732f656e7472656761732f666f746f732f666f746f5f454e542d3030303032372d4633363932392e6a7067, 0x2f70726f6a6563745469656e64615669727475616c2f75706c6f6164732f656e7472656761732f6669726d61732f6669726d615f454e542d3030303032372d4633363932392e706e67, NULL, 4.51288300, -75.65307843, 'ENT-000027-F36929', 'Prueba 02', '/projectTiendaVirtual/uploads/comprobantes/comprobante_ENT-000027-F36929.pdf', '2025-11-20 21:54:27', 1, '2025-11-20 16:54:29', '2025-11-20 21:54:27'),
 (7, 7, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 0x2f70726f6a6563745469656e64615669727475616c2f75706c6f6164732f656e7472656761732f666f746f732f666f746f5f454e542d3030303032382d3437364630302e6a7067, 0x2f70726f6a6563745469656e64615669727475616c2f75706c6f6164732f656e7472656761732f6669726d61732f6669726d615f454e542d3030303032382d3437364630302e706e67, NULL, 4.51282312, -75.65310508, 'ENT-000028-476F00', 'Prueba 3', '/projectTiendaVirtual/uploads/comprobantes/comprobante_ENT-000028-476F00.pdf', '2025-11-20 21:56:21', 1, '2025-11-20 16:56:23', '2025-11-20 21:56:21'),
 (8, 8, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 0x2f70726f6a6563745469656e64615669727475616c2f75706c6f6164732f656e7472656761732f666f746f732f666f746f5f454e542d3030303032392d4546443442432e6a7067, 0x2f70726f6a6563745469656e64615669727475616c2f75706c6f6164732f656e7472656761732f6669726d61732f6669726d615f454e542d3030303032392d4546443442432e706e67, NULL, 4.51277325, -75.65375583, 'ENT-000029-EFD4BC', 'Prueba 04', '/projectTiendaVirtual/uploads/comprobantes/comprobante_ENT-000029-EFD4BC.pdf', '2025-11-20 22:01:40', 1, '2025-11-20 17:01:42', '2025-11-20 22:01:40'),
-(9, 9, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', NULL, NULL, NULL, 4.51282178, -75.65343730, 'ENT-000030-139FC0', 'Pruea 05', '/projectTiendaVirtual/uploads/comprobantes/comprobante_ENT-000030-139FC0.pdf', '2025-11-20 22:21:36', 1, '2025-11-20 17:21:38', '2025-11-20 22:21:36');
+(9, 9, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', NULL, NULL, NULL, 4.51282178, -75.65343730, 'ENT-000030-139FC0', 'Pruea 05', '/projectTiendaVirtual/uploads/comprobantes/comprobante_ENT-000030-139FC0.pdf', '2025-11-20 22:21:36', 1, '2025-11-20 17:21:38', '2025-11-20 22:21:36'),
+(10, 10, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', NULL, NULL, NULL, 4.51283596, -75.65314151, 'ENT-000031-3A428F', 'ninguna', '/projectTiendaVirtual/uploads/comprobantes/comprobante_ENT-000031-3A428F.pdf', '2025-11-24 23:34:04', 1, '2025-11-24 18:34:06', '2025-11-24 23:34:04');
 
 -- --------------------------------------------------------
 
@@ -125,14 +126,14 @@ CREATE TABLE `credenciales` (
 --
 
 INSERT INTO `credenciales` (`id`, `usuario`, `contrasena`, `tipo`, `empleado_id`, `cliente_id`, `ultimo_acceso`, `activo`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$10$BpkDiIPc1/1Cn4VF1JQHlOVOqv99zTr/qWlFtSCnNMuTfca8YY2cy', 'empleado', 1, NULL, '2025-11-20 22:19:37', 1, '2025-08-08 01:08:52', '2025-11-20 22:19:37'),
+(1, 'admin', '$2y$10$BpkDiIPc1/1Cn4VF1JQHlOVOqv99zTr/qWlFtSCnNMuTfca8YY2cy', 'empleado', 1, NULL, '2025-11-24 23:25:56', 1, '2025-08-08 01:08:52', '2025-11-24 23:25:56'),
 (2, 'mrodriguez', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 2, NULL, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (3, 'jgarcia', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 3, NULL, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (4, 'aherrera', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 4, NULL, NULL, 0, '2025-08-08 01:08:52', '2025-08-09 03:11:59'),
 (5, 'rjimenez', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 5, NULL, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (6, 'fcastro', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 6, NULL, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (7, 'dmorales', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 7, NULL, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
-(8, 'constructora.bogota', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', NULL, 1, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
+(8, 'cliente2', '$2y$10$K4dmTtJfGc.2PvyVosfK8Op6/olfvuGb9nt1Nn4uacWH0f2GPf0D2', 'cliente', 1, 1, '2025-11-24 23:25:02', 1, '2025-08-08 01:08:52', '2025-11-24 23:25:02'),
 (9, 'hidraulicos.norte', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', NULL, 2, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (10, 'garcia.hermanos', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', NULL, 3, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (11, 'suministros.cali', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', NULL, 4, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
@@ -142,8 +143,8 @@ INSERT INTO `credenciales` (`id`, `usuario`, `contrasena`, `tipo`, `empleado_id`
 (15, 'ferreteria.progreso', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', NULL, 8, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (16, 'tuberias.caribe', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'cliente', NULL, 9, NULL, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (17, 'mantenimiento.pyme', '123', 'cliente', NULL, 10, NULL, 1, '2025-08-08 01:08:52', '2025-10-16 16:58:46'),
-(18, 'cliente', '$2y$10$Gv2skFGtan3Yb9ZPmNbLa.kLQyNXHFhZjDL3uB2qEoRHi3CS8gVSC', 'cliente', NULL, 13, '2025-11-19 20:01:43', 1, '2025-10-16 17:00:59', '2025-11-19 20:01:43'),
-(20, 'repartidor', '$2y$10$3FmJWleDcQGkReD0vLY7CuvdxrLaaUAhoALVigIrNmsYj/Clxg9wC', 'empleado', 11, NULL, '2025-11-20 22:20:34', 1, '2025-11-19 16:38:42', '2025-11-20 22:20:34'),
+(18, 'cliente', '$2y$10$Gv2skFGtan3Yb9ZPmNbLa.kLQyNXHFhZjDL3uB2qEoRHi3CS8gVSC', 'cliente', NULL, 13, '2025-11-24 23:39:55', 1, '2025-10-16 17:00:59', '2025-11-24 23:39:55'),
+(20, 'repartidor', '$2y$10$3FmJWleDcQGkReD0vLY7CuvdxrLaaUAhoALVigIrNmsYj/Clxg9wC', 'empleado', 11, NULL, '2025-11-24 23:29:41', 1, '2025-11-19 16:38:42', '2025-11-24 23:29:41'),
 (21, 'tomas.londoño', '$2y$10$n0XaM/ii4ZPwYglmnjAAj.7PlJoIPO6aAxdNlJN.qWzHtrXp0wxDS', 'cliente', NULL, 14, NULL, 1, '2025-11-19 18:10:07', '2025-11-19 18:10:07'),
 (23, 'jolmedo', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'empleado', 10, NULL, NULL, 1, '2025-11-19 18:56:07', '2025-11-19 18:56:07');
 
@@ -184,7 +185,7 @@ INSERT INTO `descuentos_clientes` (`id`, `cliente_id`, `grupo_id`, `porcentaje_d
 (14, 6, 1, 10.00, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (15, 9, 15, 22.00, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (16, 9, 16, 20.00, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
-(17, 9, 13, 18.00, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
+(17, 9, 13, 18.21, 1, '2025-08-08 01:08:52', '2025-11-21 20:16:33'),
 (18, 9, 14, 16.00, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (19, 13, 21, 20.00, 1, '2025-10-27 15:00:37', '2025-10-27 15:00:37'),
 (20, 13, 2, 20.00, 1, '2025-11-11 22:08:28', '2025-11-11 22:08:28');
@@ -314,7 +315,34 @@ INSERT INTO `detalle_pedidos` (`id`, `pedido_id`, `producto_id`, `cantidad`, `pr
 (57, 105, 2, 3.00, 47500.00, 20.00, 28500.00, 142500.00, '2025-11-15 18:11:05'),
 (58, 105, 7, 1.00, 99860.00, 0.00, 0.00, 99860.00, '2025-11-15 18:11:05'),
 (59, 105, 219, 5.00, 26479.00, 20.00, 26479.00, 132395.00, '2025-11-15 18:11:05'),
-(60, 105, 907, 2.00, 2299.00, 0.00, 0.00, 4598.00, '2025-11-15 18:11:05');
+(60, 105, 907, 2.00, 2299.00, 0.00, 0.00, 4598.00, '2025-11-15 18:11:05'),
+(61, 106, 2, 3.00, 47500.00, 20.00, 28500.00, 142500.00, '2025-11-21 20:10:22'),
+(62, 106, 219, 5.00, 26479.00, 20.00, 26479.00, 132395.00, '2025-11-21 20:10:22'),
+(63, 106, 907, 2.00, 2299.00, 0.00, 0.00, 4598.00, '2025-11-21 20:10:22'),
+(64, 107, 72, 24.00, 7923.00, 0.00, 0.00, 190152.00, '2025-11-24 23:19:06'),
+(65, 107, 189, 1.00, 4928.00, 0.00, 0.00, 4928.00, '2025-11-24 23:19:06'),
+(66, 107, 203, 6.00, 42792.00, 0.00, 0.00, 256752.00, '2025-11-24 23:19:06'),
+(67, 107, 324, 4.00, 1176730.00, 0.00, 0.00, 4706920.00, '2025-11-24 23:19:06'),
+(68, 107, 341, 60.00, 15862.00, 0.00, 0.00, 951720.00, '2025-11-24 23:19:06'),
+(69, 107, 419, 3.00, 65913.00, 0.00, 0.00, 197739.00, '2025-11-24 23:19:06'),
+(70, 107, 501, 6.00, 136698.00, 0.00, 0.00, 820188.00, '2025-11-24 23:19:06'),
+(71, 107, 552, 1.00, 57173.00, 0.00, 0.00, 57173.00, '2025-11-24 23:19:06'),
+(72, 107, 613, 5.00, 166872.00, 0.00, 0.00, 834360.00, '2025-11-24 23:19:06'),
+(73, 107, 684, 19.00, 114191.00, 20.00, 433925.80, 2169629.00, '2025-11-24 23:19:06'),
+(74, 107, 799, 5.00, 62127.00, 0.00, 0.00, 310635.00, '2025-11-24 23:19:06'),
+(75, 107, 879, 16.00, 59073.00, 0.00, 0.00, 945168.00, '2025-11-24 23:19:06'),
+(76, 108, 72, 24.00, 7923.00, 0.00, 0.00, 190152.00, '2025-11-24 23:19:10'),
+(77, 108, 189, 1.00, 4928.00, 0.00, 0.00, 4928.00, '2025-11-24 23:19:10'),
+(78, 108, 203, 6.00, 42792.00, 0.00, 0.00, 256752.00, '2025-11-24 23:19:10'),
+(79, 108, 324, 4.00, 1176730.00, 0.00, 0.00, 4706920.00, '2025-11-24 23:19:10'),
+(80, 108, 341, 60.00, 15862.00, 0.00, 0.00, 951720.00, '2025-11-24 23:19:10'),
+(81, 108, 419, 3.00, 65913.00, 0.00, 0.00, 197739.00, '2025-11-24 23:19:10'),
+(82, 108, 501, 6.00, 136698.00, 0.00, 0.00, 820188.00, '2025-11-24 23:19:10'),
+(83, 108, 552, 1.00, 57173.00, 0.00, 0.00, 57173.00, '2025-11-24 23:19:10'),
+(84, 108, 613, 5.00, 166872.00, 0.00, 0.00, 834360.00, '2025-11-24 23:19:10'),
+(85, 108, 684, 19.00, 114191.00, 20.00, 433925.80, 2169629.00, '2025-11-24 23:19:10'),
+(86, 108, 799, 5.00, 62127.00, 0.00, 0.00, 310635.00, '2025-11-24 23:19:10'),
+(87, 108, 879, 16.00, 59073.00, 0.00, 0.00, 945168.00, '2025-11-24 23:19:10');
 
 -- --------------------------------------------------------
 
@@ -363,7 +391,6 @@ INSERT INTO `direcciones_clientes` (`id`, `cliente_id`, `nombre`, `direccion`, `
 (13, 9, 'Almacén Principal', 'Calle 70 # 45-18', 'Cartagena', 'Bolívar', '130001', '6018901234', NULL, NULL, 'Norte', 5, 1, 1, 1, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (14, 9, 'Punto de Venta', 'Avenida Pedro de Heredia # 30-25', 'Cartagena', 'Bolívar', '130010', '3156789012', NULL, NULL, 'Centro', 5, 0, 0, 1, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (15, 10, 'Oficina Central', 'Avenida El Dorado # 68-90', 'Bogotá', 'Cundinamarca', '110111', '6019012345', NULL, NULL, 'Occidente', 2, 1, 1, 1, 1, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
-(16, 13, 'Direccion Cliente Prueba', 'Calle 12 #12-2', 'Cali', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 1, 1, '2025-10-16 15:43:46', '2025-11-15 17:50:22'),
 (17, 5, 'Bodega Principal Bucaramanga', 'Carrera 30 # 50-25', 'Bucaramanga', 'Santander', '680001', NULL, 'Juan P??rez', '13456789', NULL, NULL, 0, 0, 1, 1, '2025-11-19 18:56:07', '2025-11-19 18:56:07'),
 (18, 5, 'Obra Ca??averal', 'Calle 45 # 30-18', 'Floridablanca', 'Santander', '681001', NULL, 'Supervisor Carlos Ruiz', '91234567', NULL, NULL, 0, 0, 1, 1, '2025-11-19 18:56:07', '2025-11-19 18:56:07'),
 (19, 6, 'Sede Administrativa', 'Calle 100 # 15-40', 'Cali', 'Valle del Cauca', '760001', NULL, NULL, NULL, NULL, NULL, 0, 1, 0, 1, '2025-11-19 18:56:07', '2025-11-19 18:56:07'),
@@ -403,7 +430,8 @@ INSERT INTO `direcciones_clientes` (`id`, `cliente_id`, `nombre`, `direccion`, `
 (53, 7, 'Oficina Barranquilla', 'Diagonal 20 # 35-12', 'Barranquilla', 'Atl??ntico', '080001', NULL, 'Roberto Silva', '1023456789', NULL, NULL, 0, 1, 1, 1, '2025-11-19 18:58:31', '2025-11-19 18:58:31'),
 (54, 8, 'Local Comercial', 'Carrera 8 # 12-30', 'Manizales', 'Caldas', '170001', NULL, 'Dora Alicia Mendoza', '52345678901', NULL, NULL, 0, 1, 1, 1, '2025-11-19 18:58:31', '2025-11-19 18:58:31'),
 (55, 9, 'Bodega Cartagena', 'Calle 70 # 45-18', 'Cartagena', 'Bol??var', '130001', NULL, 'Patricia Herrera', '55123456', NULL, NULL, 0, 0, 1, 1, '2025-11-19 18:58:31', '2025-11-19 18:58:31'),
-(56, 10, 'Sede Bogot??', 'Avenida El Dorado # 68-90', 'Bogot??', 'Cundinamarca', '110111', NULL, 'Francisco L??pez', '80234567', NULL, NULL, 0, 1, 1, 1, '2025-11-19 18:58:31', '2025-11-19 18:58:31');
+(56, 10, 'Sede Bogot??', 'Avenida El Dorado # 68-90', 'Bogot??', 'Cundinamarca', '110111', NULL, 'Francisco L??pez', '80234567', NULL, NULL, 0, 1, 1, 1, '2025-11-19 18:58:31', '2025-11-19 18:58:31'),
+(57, 13, 'Generica', 'Cra 23e #10-24', 'Armenia', 'Quindio', '760001', '3001234567', NULL, NULL, NULL, NULL, 1, 0, 1, 1, '2025-11-24 23:32:21', '2025-11-24 23:32:21');
 
 -- --------------------------------------------------------
 
@@ -477,7 +505,8 @@ INSERT INTO `entregas` (`id`, `envio_id`, `pedido_id`, `factura_id`, `repartidor
 (6, 27, 102, NULL, 11, NULL, '', NULL, NULL, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 'entregado', '2025-11-20 16:54:27', '2025-11-20 16:54:27', 'Prueba 02', '2025-11-20 21:54:27', '2025-11-20 21:54:27'),
 (7, 28, 101, NULL, 11, NULL, '', NULL, NULL, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 'entregado', '2025-11-20 16:56:21', '2025-11-20 16:56:21', 'Prueba 3', '2025-11-20 21:56:21', '2025-11-20 21:56:21'),
 (8, 29, 100, NULL, 11, NULL, '', NULL, NULL, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 'entregado', '2025-11-20 17:01:40', '2025-11-20 17:01:40', 'Prueba 04', '2025-11-20 22:01:40', '2025-11-20 22:01:40'),
-(9, 30, 99, NULL, 11, NULL, '', NULL, NULL, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 'entregado', '2025-11-20 17:21:36', '2025-11-20 17:21:36', 'Pruea 05', '2025-11-20 22:21:36', '2025-11-20 22:21:36');
+(9, 30, 99, NULL, 11, NULL, '', NULL, NULL, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 'entregado', '2025-11-20 17:21:36', '2025-11-20 17:21:36', 'Pruea 05', '2025-11-20 22:21:36', '2025-11-20 22:21:36'),
+(10, 31, 108, NULL, 11, NULL, '', NULL, NULL, 'Tomas', '1092852724', 'tomaslondonomuriel123@gmail.com', 'entregado', '2025-11-24 18:34:04', '2025-11-24 18:34:04', 'ninguna', '2025-11-24 23:34:04', '2025-11-24 23:34:04');
 
 -- --------------------------------------------------------
 
@@ -512,10 +541,10 @@ CREATE TABLE `envios` (
 INSERT INTO `envios` (`id`, `pedido_id`, `orden_venta_id`, `numero_guia`, `transportista`, `repartidor_id`, `fecha_programada`, `fecha_salida`, `fecha_entrega_real`, `estado`, `direccion_entrega_id`, `receptor_nombre`, `receptor_documento`, `observaciones`, `costo_envio`, `created_at`, `updated_at`) VALUES
 (1, 4, 4, 'GU-2025-001', 'Transporte Sol Técnica', 5, '2025-08-07', '2025-08-07 08:30:00', '2025-08-07 14:15:00', 'entregado', 6, 'Miguel García', '79123456789', 'Entrega exitosa - Material recibido conforme', 45000.00, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (2, 3, 3, 'GU-2025-002', 'Transporte Sol Técnica', 6, '2025-08-08', '2025-08-08 09:00:00', NULL, 'en_transito', 7, 'Carmen Torres', '900345678-9', 'En ruta hacia Cali', 85000.00, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
-(3, 1, 1, 'GU-2025-00', 'Transporte Sol Técnica', 10, '2025-11-20', NULL, NULL, 'en_preparacion', 1, 'Oscar Londo??o', '1012345678', 'Envío programado para mañana', 35000.00, '2025-08-08 01:08:52', '2025-11-20 21:51:49'),
+(3, 1, 1, 'GU-2025-00', 'Transporte Sol Técnica', 10, '2025-11-20', NULL, '2025-11-21 21:19:42', 'entregado', 1, 'Oscar Londo??o', '1012345678', 'Envío programado para mañana', 35000.00, '2025-08-08 01:08:52', '2025-11-21 20:19:42'),
 (4, 2, 2, 'GU-2025-004', 'Transporte Sol Técnica', 6, '2025-08-08', '2025-08-08 07:45:00', NULL, 'en_transito', 4, 'Laura Gómez', '800234567-8', 'Material urgente en camino', 25000.00, '2025-08-08 01:08:52', '2025-08-08 01:08:52'),
 (10, 5, NULL, 'GU-2025-01', 'Transporte Sol Técnica', 5, '2025-11-22', NULL, NULL, 'programado', 17, 'Juan P??rez', '13456789', 'Envio de Prueba', 0.00, '2025-10-16 16:32:54', '2025-11-19 19:01:07'),
-(11, 93, NULL, 'PED-20251016-3087', 'Transporte Sol Técnica', 6, '2025-11-21', NULL, NULL, 'en_preparacion', 19, 'Sebasti??n Ruiz', '1094567890', 'Envio de Prueba #2', 0.00, '2025-10-16 16:55:26', '2025-11-19 19:01:07'),
+(11, 93, NULL, 'PED-20251016-3087', 'Transporte Sol Técnica', 6, '2025-11-21', NULL, NULL, 'en_transito', 19, 'Sebasti??n Ruiz', '1094567890', 'Envio de Prueba #2', 0.00, '2025-10-16 16:55:26', '2025-11-24 23:29:23'),
 (12, 105, NULL, 'PED-20251115-8589', 'Transporte Sol Técnica', 10, '2025-11-20', NULL, NULL, 'programado', 20, 'Roberto Silva', '1023456789', NULL, 0.00, '2025-11-19 18:24:24', '2025-11-19 18:56:07'),
 (13, 104, NULL, 'PED-20251115-8879', 'Transporte Sol Técnica', 11, '2025-11-19', NULL, '2025-11-20 16:00:49', 'entregado', 16, 'Tomas', '1092852724', NULL, 0.00, '2025-11-19 18:39:10', '2025-11-20 21:00:49'),
 (14, 1, NULL, NULL, 'Transporte Sol T??cnica', 5, '2025-11-19', NULL, NULL, 'programado', 1, 'Oscar Londo??o', '1012345678', NULL, 0.00, '2025-11-19 18:56:07', '2025-11-19 18:56:07'),
@@ -525,7 +554,6 @@ INSERT INTO `envios` (`id`, `pedido_id`, `orden_venta_id`, `numero_guia`, `trans
 (18, NULL, NULL, NULL, 'Transporte Sol T??cnica', 10, '2025-11-21', NULL, NULL, 'programado', 21, 'Dora Alicia Mendoza', '52345678901', NULL, 0.00, '2025-11-19 18:56:07', '2025-11-19 18:56:07'),
 (19, NULL, NULL, NULL, 'Transporte Sol T??cnica', 10, '2025-11-19', NULL, NULL, 'en_transito', 22, 'Patricia Herrera', '55123456', NULL, 0.00, '2025-11-19 18:56:07', '2025-11-19 18:56:07'),
 (20, 1, NULL, NULL, 'Transporte Sol T??cnica', 5, '2025-11-19', NULL, NULL, 'programado', 1, 'Oscar Londo??o', '1012345678', NULL, 0.00, '2025-11-19 18:57:25', '2025-11-19 18:57:25'),
-(21, 2, NULL, NULL, 'Transporte Sol T??cnica', 5, '2025-11-20', NULL, NULL, 'programado', 4, 'Laura G??mez', '52987654', NULL, 0.00, '2025-11-19 18:57:25', '2025-11-19 18:57:25'),
 (22, 3, NULL, NULL, 'Transporte Sol T??cnica', 6, '2025-11-19', NULL, NULL, 'en_preparacion', 7, 'Carmen Torres', '31456789', NULL, 0.00, '2025-11-19 18:57:25', '2025-11-19 18:57:25'),
 (23, 4, NULL, NULL, 'Transporte Sol T??cnica', 6, '2025-11-18', NULL, NULL, 'fallido', 17, 'Juan P??rez', '13456789', NULL, 0.00, '2025-11-19 18:57:25', '2025-11-19 18:57:25'),
 (24, NULL, NULL, NULL, 'Transporte Sol T??cnica', 10, '2025-11-21', NULL, NULL, 'programado', 21, 'Dora Alicia Mendoza', '52345678901', NULL, 0.00, '2025-11-19 18:57:25', '2025-11-19 18:57:25'),
@@ -534,7 +562,8 @@ INSERT INTO `envios` (`id`, `pedido_id`, `orden_venta_id`, `numero_guia`, `trans
 (27, 102, NULL, 'PED-20251111-2332', 'Transporte Sol Técnica', 11, '2025-11-20', NULL, '2025-11-20 16:54:27', 'entregado', 16, 'Tomas', '1092852724', 'Prueba 2', 0.00, '2025-11-20 21:53:25', '2025-11-20 21:54:27'),
 (28, 101, NULL, 'PED-20251111-7717', 'Transporte Sol Técnica', 11, '2025-11-20', NULL, '2025-11-20 16:56:21', 'entregado', 16, 'Tomas', '1092852724', NULL, 0.00, '2025-11-20 21:55:25', '2025-11-20 21:56:21'),
 (29, 100, NULL, 'PED-20251027-4658', 'Transporte Sol Técnica', 11, '2025-11-20', NULL, '2025-11-20 17:01:40', 'entregado', 16, 'Tomas', '1092852724', 'Prueba 04', 0.00, '2025-11-20 22:00:33', '2025-11-20 22:01:40'),
-(30, 99, NULL, 'PED-20251021-7194', 'Transporte Sol Técnica', 11, '2025-11-20', NULL, '2025-11-20 17:21:36', 'entregado', 16, 'Tomas', '1092852724', 'Prueba 5', 0.00, '2025-11-20 22:18:45', '2025-11-20 22:21:36');
+(30, 99, NULL, 'PED-20251021-7194', 'Transporte Sol Técnica', 11, '2025-11-20', NULL, '2025-11-20 17:21:36', 'entregado', 16, 'Tomas', '1092852724', 'Prueba 5', 0.00, '2025-11-20 22:18:45', '2025-11-20 22:21:36'),
+(31, 108, NULL, 'PED-20251125-3764', 'Transporte Sol Técnica', 11, '2025-11-24', NULL, '2025-11-24 18:34:04', 'entregado', 57, 'Tomas', '1092852724', 'Hola', 0.00, '2025-11-24 23:32:48', '2025-11-24 23:34:04');
 
 -- --------------------------------------------------------
 
@@ -620,7 +649,8 @@ INSERT INTO `historial_entregas` (`id`, `entrega_id`, `accion`, `estado_anterior
 (5, 6, 'ENTREGA_COMPLETADA', 'programado', 'entregado', 11, 'Prueba 02', '2025-11-20 21:54:27'),
 (6, 7, 'ENTREGA_COMPLETADA', 'programado', 'entregado', 11, 'Prueba 3', '2025-11-20 21:56:21'),
 (7, 8, 'ENTREGA_COMPLETADA', 'programado', 'entregado', 11, 'Prueba 04', '2025-11-20 22:01:40'),
-(8, 9, 'ENTREGA_COMPLETADA', 'programado', 'entregado', 11, 'Pruea 05', '2025-11-20 22:21:36');
+(8, 9, 'ENTREGA_COMPLETADA', 'programado', 'entregado', 11, 'Pruea 05', '2025-11-20 22:21:36'),
+(9, 10, 'ENTREGA_COMPLETADA', 'programado', 'entregado', 11, 'ninguna', '2025-11-24 23:34:04');
 
 -- --------------------------------------------------------
 
@@ -726,7 +756,10 @@ INSERT INTO `pedidos` (`id`, `numero_documento`, `cliente_id`, `empleado_id`, `e
 (102, 'PED-20251111-2332', 13, NULL, 'confirmado', '2025-11-11 00:00:00', '2025-11-18', 643633.00, 0.00, 127807.00, 82532.16, 598358.16, NULL, '', 0, NULL, '2025-11-11 22:08:54', '2025-11-11 22:08:54'),
 (103, 'PED-20251111-5767', 13, NULL, 'confirmado', '2025-11-11 00:00:00', '2025-11-18', 928923.00, 0.00, 127807.00, 128178.56, 929294.56, NULL, '', 0, NULL, '2025-11-11 22:09:35', '2025-11-11 22:09:35'),
 (104, 'PED-20251115-8879', 13, NULL, 'confirmado', '2025-11-15 00:00:00', '2025-11-21', 279493.00, 0.00, 54979.00, 35922.24, 260436.24, NULL, '', 0, NULL, '2025-11-15 18:02:36', '2025-11-15 18:02:36'),
-(105, 'PED-20251115-8589', 13, NULL, 'confirmado', '2025-11-15 13:11:05', '2025-11-21', 379353.00, 0.00, 54979.00, 51899.84, 376273.84, NULL, '', 0, NULL, '2025-11-15 18:11:05', '2025-11-15 18:11:05');
+(105, 'PED-20251115-8589', 13, NULL, 'confirmado', '2025-11-15 13:11:05', '2025-11-21', 379353.00, 0.00, 54979.00, 51899.84, 376273.84, NULL, '', 0, NULL, '2025-11-15 18:11:05', '2025-11-15 18:11:05'),
+(106, 'PED-20251121-3397', 13, NULL, 'enviado', '2025-11-21 15:10:22', '2025-11-28', 279493.00, 0.00, 54979.00, 35922.24, 260436.24, NULL, '', 0, NULL, '2025-11-21 20:10:22', '2025-11-21 20:13:26'),
+(107, 'COT-20251125-5485', 13, NULL, 'borrador', '2025-11-24 18:19:06', '2025-12-04', 11445364.00, 0.00, 433925.80, 1761830.11, 12773268.31, NULL, 'Ninguna', 0, NULL, '2025-11-24 23:19:06', '2025-11-24 23:19:06'),
+(108, 'PED-20251125-3764', 13, NULL, 'entregado', '2025-11-24 18:19:10', '2025-12-04', 11445364.00, 0.00, 433925.80, 1761830.11, 12773268.31, NULL, 'Ninguna', 0, NULL, '2025-11-24 23:19:10', '2025-11-24 23:42:47');
 
 -- --------------------------------------------------------
 
@@ -1944,7 +1977,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de la tabla `comprobantes_entrega`
 --
 ALTER TABLE `comprobantes_entrega`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `credenciales`
@@ -1968,13 +2001,13 @@ ALTER TABLE `detalle_orden_venta`
 -- AUTO_INCREMENT de la tabla `detalle_pedidos`
 --
 ALTER TABLE `detalle_pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT de la tabla `direcciones_clientes`
 --
 ALTER TABLE `direcciones_clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
@@ -1986,13 +2019,13 @@ ALTER TABLE `empleados`
 -- AUTO_INCREMENT de la tabla `entregas`
 --
 ALTER TABLE `entregas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `envios`
 --
 ALTER TABLE `envios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `grupos_productos`
@@ -2004,7 +2037,7 @@ ALTER TABLE `grupos_productos`
 -- AUTO_INCREMENT de la tabla `historial_entregas`
 --
 ALTER TABLE `historial_entregas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `login_attempts`
@@ -2022,7 +2055,7 @@ ALTER TABLE `orden_venta`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`

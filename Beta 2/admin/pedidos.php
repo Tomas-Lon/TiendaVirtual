@@ -177,10 +177,13 @@ $count_stmt->execute($params);
 $total_pedidos = $count_stmt->fetch()['total'];
 $total_pages = ceil($total_pedidos / $limit);
 
-// Obtener pedidos paginados
-$sql = "SELECT p.*, c.nombre as cliente_nombre, c.email as cliente_email
+// Obtener pedidos paginados con información de comprobante de entrega
+$sql = "SELECT p.*, c.nombre as cliente_nombre, c.email as cliente_email,
+        comp.pdf_path as comprobante_pdf, comp.codigo_qr as codigo_comprobante
         FROM pedidos p 
         JOIN clientes c ON p.cliente_id = c.id 
+        LEFT JOIN entregas ent ON ent.pedido_id = p.id
+        LEFT JOIN comprobantes_entrega comp ON comp.entrega_id = ent.id
         $where_clause 
         ORDER BY p.created_at DESC 
         LIMIT $limit OFFSET $offset";
@@ -346,6 +349,13 @@ ob_start();
                                             onclick="cambiarEstado(<?php echo $pedido['id']; ?>, '<?php echo $pedido['estado']; ?>')" title="Cambiar estado">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <?php if ($pedido['estado'] === 'entregado' && !empty($pedido['comprobante_pdf'])): ?>
+                                    <button type="button" class="btn btn-sm btn-outline-info" 
+                                            onclick="window.open('<?php echo htmlspecialchars($pedido['comprobante_pdf']); ?>', '_blank')" 
+                                            title="Ver comprobante de entrega">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <?php endif; ?>
                                     <button type="button" class="btn btn-sm btn-outline-success" 
                                             onclick="imprimirPedido(<?php echo $pedido['id']; ?>)" title="Imprimir">
                                         <i class="fas fa-print"></i>

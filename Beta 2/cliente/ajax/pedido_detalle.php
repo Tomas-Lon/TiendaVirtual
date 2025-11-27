@@ -21,10 +21,14 @@ if ($id <= 0) {
 }
 
 try {
-    // Obtener cabecera del pedido (incluye datos del cliente)
-    $stmt = $pdo->prepare("SELECT p.*, c.nombre AS cliente_nombre, c.email AS cliente_email, p.cliente_id
+    // Obtener cabecera del pedido (incluye datos del cliente y comprobante de entrega)
+    $stmt = $pdo->prepare("SELECT p.*, c.nombre AS cliente_nombre, c.email AS cliente_email, p.cliente_id,
+        comp.pdf_path as comprobante_pdf, comp.codigo_qr as codigo_comprobante,
+        ent.fecha_entrega_real, ent.receptor_nombre
         FROM pedidos p
         LEFT JOIN clientes c ON p.cliente_id = c.id
+        LEFT JOIN entregas ent ON ent.pedido_id = p.id
+        LEFT JOIN comprobantes_entrega comp ON comp.entrega_id = ent.id
         WHERE p.id = ? LIMIT 1");
     $stmt->execute([$id]);
     $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -60,6 +64,19 @@ try {
         <p class="mb-0"><strong>Cliente:</strong> <?php echo htmlspecialchars($pedido['cliente_nombre'] ?? ''); ?> &nbsp; <small class="text-muted"><?php echo htmlspecialchars($pedido['cliente_email'] ?? ''); ?></small></p>
         <p class="mb-0"><strong>Fecha pedido:</strong> <?php echo date('d/m/Y H:i', strtotime($pedido['fecha_pedido'])); ?></p>
         <p class="mb-0"><strong>Estado:</strong> <?php echo htmlspecialchars($pedido['estado']); ?></p>
+        <?php if ($pedido['estado'] === 'entregado' && !empty($pedido['comprobante_pdf'])): ?>
+        <div class="alert alert-success mt-3">
+            <h6 class="alert-heading"><i class="fas fa-check-circle"></i> Pedido Entregado</h6>
+            <p class="mb-2"><strong>Fecha de entrega:</strong> <?php echo $pedido['fecha_entrega_real'] ? date('d/m/Y H:i', strtotime($pedido['fecha_entrega_real'])) : 'N/A'; ?></p>
+            <p class="mb-2"><strong>Recibido por:</strong> <?php echo htmlspecialchars($pedido['receptor_nombre'] ?? 'N/A'); ?></p>
+            <?php if (!empty($pedido['codigo_comprobante'])): ?>
+            <p class="mb-2"><strong>Código:</strong> <code><?php echo htmlspecialchars($pedido['codigo_comprobante']); ?></code></p>
+            <?php endif; ?>
+            <a href="<?php echo htmlspecialchars($pedido['comprobante_pdf']); ?>" target="_blank" class="btn btn-success btn-sm">
+                <i class="fas fa-file-pdf"></i> Ver Comprobante de Entrega
+            </a>
+        </div>
+        <?php endif; ?>
         <?php if (!empty($pedido['observaciones'])): ?>
             <p class="mt-2"><strong>Observaciones:</strong> <?php echo nl2br(htmlspecialchars($pedido['observaciones'])); ?></p>
         <?php endif; ?>

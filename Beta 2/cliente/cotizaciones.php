@@ -71,7 +71,10 @@ ob_start();
                         </div>
                     </div>
                     <div class="card-footer bg-white">
-                        <button class="btn btn-sm btn-outline-primary" onclick="verDetalle(<?= (int)$c['id'] ?>)"><i class="fas fa-eye"></i> Ver detalle</button>
+                        <div class="btn-group w-100" role="group">
+                            <button class="btn btn-sm btn-outline-primary" onclick="verDetalle(<?= (int)$c['id'] ?>)"><i class="fas fa-eye"></i> Ver detalle</button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="imprimirCotizacion(<?= (int)$c['id'] ?>)"><i class="fas fa-print"></i> Imprimir</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -122,6 +125,10 @@ function verDetalle(id) {
                 </div>
             `;
         });
+}
+
+function imprimirCotizacion(id) {
+    window.open(`reportes/cotizacion_print.php?id=${id}`, '_blank');
 }
 </script>
 

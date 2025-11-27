@@ -34,45 +34,66 @@ try {
     $grupos = [];
 }
 
-// Endpoint de búsqueda de productos para el cliente (paridad con admin)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'buscar_productos') {
+// Endpoints AJAX para el cliente
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
-    try {
-        $pdo = getConnection();
-        $search = trim($_POST['search'] ?? '');
-        $grupo_id = $_POST['grupo_id'] ?? '';
-
-        if ($search === '' && $grupo_id === '') {
-            $sql = "SELECT p.id, p.codigo, p.descripcion, p.precio, 0 as stock_disponible, g.nombre as grupo_nombre
-                    FROM productos p LEFT JOIN grupos_productos g ON p.grupo_id = g.id
-                    ORDER BY p.descripcion LIMIT 20";
-            $params = [];
-        } else {
-            $where = [];
-            $params = [];
-            if ($search !== '') {
-                $where[] = "(p.codigo LIKE ? OR p.descripcion LIKE ?)";
-                $params[] = "%{$search}%";
-                $params[] = "%{$search}%";
+    
+    if ($_POST['action'] === 'get_direcciones_cliente') {
+        try {
+            $pdo = getConnection();
+            $cliente_id = $_SESSION['cliente_id'] ?? 0;
+            if ($cliente_id <= 0) {
+                echo json_encode(['success' => false, 'message' => 'Cliente inválido']);
+                exit;
             }
-            if ($grupo_id !== '') {
-                $where[] = "p.grupo_id = ?";
-                $params[] = $grupo_id;
-            }
-            $where_clause = $where ? ("WHERE " . implode(" AND ", $where)) : '';
-            $sql = "SELECT p.id, p.codigo, p.descripcion, p.precio, 0 as stock_disponible, g.nombre as grupo_nombre
-                    FROM productos p LEFT JOIN grupos_productos g ON p.grupo_id = g.id
-                    {$where_clause}
-                    ORDER BY p.descripcion LIMIT 50";
+            $stmt = $pdo->prepare("SELECT id, nombre, direccion, ciudad, departamento, codigo_postal, contacto_receptor, documento_receptor FROM direcciones_clientes WHERE cliente_id = ? ORDER BY id DESC");
+            $stmt->execute([$cliente_id]);
+            $dirs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode(['success' => true, 'direcciones' => $dirs]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode(['success' => true, 'productos' => $productos]);
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        exit;
     }
-    exit;
+    
+    if ($_POST['action'] === 'buscar_productos') {
+        try {
+            $pdo = getConnection();
+            $search = trim($_POST['search'] ?? '');
+            $grupo_id = $_POST['grupo_id'] ?? '';
+
+            if ($search === '' && $grupo_id === '') {
+                $sql = "SELECT p.id, p.codigo, p.descripcion, p.precio, 0 as stock_disponible, g.nombre as grupo_nombre
+                        FROM productos p LEFT JOIN grupos_productos g ON p.grupo_id = g.id
+                        ORDER BY p.descripcion LIMIT 20";
+                $params = [];
+            } else {
+                $where = [];
+                $params = [];
+                if ($search !== '') {
+                    $where[] = "(p.codigo LIKE ? OR p.descripcion LIKE ?)";
+                    $params[] = "%{$search}%";
+                    $params[] = "%{$search}%";
+                }
+                if ($grupo_id !== '') {
+                    $where[] = "p.grupo_id = ?";
+                    $params[] = $grupo_id;
+                }
+                $where_clause = $where ? ("WHERE " . implode(" AND ", $where)) : '';
+                $sql = "SELECT p.id, p.codigo, p.descripcion, p.precio, 0 as stock_disponible, g.nombre as grupo_nombre
+                        FROM productos p LEFT JOIN grupos_productos g ON p.grupo_id = g.id
+                        {$where_clause}
+                        ORDER BY p.descripcion LIMIT 50";
+            }
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            echo json_encode(['success' => true, 'productos' => $productos]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+        exit;
+    }
 }
 
 ob_start();
@@ -210,6 +231,20 @@ ob_start();
                     </div>
 
                     <div class="mb-3">
+                        <label for="direccion_entrega" class="form-label fw-semibold">Dirección de Entrega *</label>
+                        <select class="form-select" id="direccion_entrega" required>
+                            <option value="">Cargando direcciones...</option>
+                        </select>
+                        <small class="text-muted">Selecciona dónde quieres recibir tu pedido.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="persona_recibe" class="form-label fw-semibold">Persona que recibe</label>
+                        <input type="text" class="form-control" id="persona_recibe" placeholder="Nombre de quien recibe">
+                        <small class="text-muted">Se autocompleta con datos de la dirección.</small>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="observaciones" class="form-label fw-semibold">Observaciones</label>
                         <textarea class="form-control" id="observaciones" rows="3" placeholder="Notas del pedido..."></textarea>
                     </div>
@@ -298,6 +333,63 @@ function mergeItems(items){
         if(ex){ ex.cantidad+=qty; } else { cart.set(id,{...it,cantidad:qty,precio:Number(it.precio)}); }
     });
     renderCart();
+}
+
+// Cargar direcciones del cliente
+async function cargarDireccionesCliente(){
+    const select=document.getElementById('direccion_entrega');
+    select.disabled=true;
+    select.innerHTML='<option value="">Cargando...</option>';
+    try{
+        const fd=new FormData();
+        fd.append('action','get_direcciones_cliente');
+        const res=await fetch('nueva_compra.php',{method:'POST',body:fd});
+        const data=await res.json();
+        if(data.success && Array.isArray(data.direcciones)){
+            if(data.direcciones.length===0){
+                select.innerHTML='<option value="">Sin direcciones. Ve a tu perfil para agregar una.</option>';
+            } else {
+                let html='<option value="">Seleccione una dirección</option>';
+                data.direcciones.forEach(d=>{
+                    const nombre = d.nombre ? d.nombre + ' - ' : '';
+                    const parts=[nombre + d.direccion, d.ciudad||'', d.departamento||'', d.codigo_postal?('CP '+d.codigo_postal):''].filter(Boolean).join(' - ');
+                    html+=`<option value="${d.id}" data-contacto="${escapeHtml(d.contacto_receptor||'')}" data-documento="${escapeHtml(d.documento_receptor||'')}">${escapeHtml(parts)}</option>`;
+                });
+                select.innerHTML=html;
+                if(data.direcciones.length===1){
+                    select.value=String(data.direcciones[0].id);
+                    actualizarReceptor();
+                }
+            }
+        } else {
+            select.innerHTML='<option value="">No se pudieron cargar las direcciones</option>';
+        }
+    }catch(e){
+        console.error(e);
+        select.innerHTML='<option value="">Error al cargar direcciones</option>';
+    }finally{
+        select.disabled=false;
+    }
+}
+
+// Actualizar datos del receptor al cambiar dirección
+function actualizarReceptor(){
+    const select=document.getElementById('direccion_entrega');
+    const option=select.options[select.selectedIndex];
+    if(option && option.value){
+        document.getElementById('persona_recibe').value=option.dataset.contacto||'';
+    } else {
+        document.getElementById('persona_recibe').value='';
+    }
+}
+
+// Verificar formulario
+function verificarFormulario(){
+    const dir=document.getElementById('direccion_entrega').value;
+    const tiene=cart.size>0;
+    const ok=!!dir && tiene;
+    document.getElementById('btnCotizar').disabled=!ok;
+    document.getElementById('btnGenerarPedido').disabled=!ok;
 }
 
 function getItemsArray(){
@@ -439,18 +531,25 @@ document.getElementById('btnToCart').addEventListener('click',async ()=>{
     }catch(e){ console.error(e); alert('Error al guardar el carrito'); }
 });
 
+// Evento para actualizar receptor al cambiar dirección
+document.getElementById('direccion_entrega').addEventListener('change', actualizarReceptor);
+
 // Crear cotización desde el cliente
 document.getElementById('btnCotizar').addEventListener('click', async ()=>{
     if(cart.size===0) return alert('No hay productos para cotizar');
+    const direccion_id = document.getElementById('direccion_entrega').value;
+    if(!direccion_id) return alert('Debes seleccionar una dirección de entrega');
+    
     const btn = document.getElementById('btnCotizar');
     const original = btn.innerHTML; btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Creando...';
     try{
         const items = getItemsArray();
         const observaciones = document.getElementById('observaciones').value;
         const fecha_entrega = document.getElementById('fecha_entrega').value;
+        const persona_recibe = document.getElementById('persona_recibe').value;
         const res = await fetch('ajax/crear_documento.php',{
             method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ action:'crear_cotizacion', items, observaciones, fecha_entrega })
+            body: JSON.stringify({ action:'crear_cotizacion', items, observaciones, fecha_entrega, direccion_entrega_id: direccion_id, persona_recibe })
         });
         const data = await res.json();
         if(data.success){
@@ -465,15 +564,19 @@ document.getElementById('btnCotizar').addEventListener('click', async ()=>{
 // Generar pedido desde el cliente
 document.getElementById('btnGenerarPedido').addEventListener('click', async ()=>{
     if(cart.size===0) return alert('No hay productos para generar pedido');
+    const direccion_id = document.getElementById('direccion_entrega').value;
+    if(!direccion_id) return alert('Debes seleccionar una dirección de entrega');
+    
     const btn = document.getElementById('btnGenerarPedido');
     const original = btn.innerHTML; btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Enviando...';
     try{
         const items = getItemsArray();
         const observaciones = document.getElementById('observaciones').value;
         const fecha_entrega = document.getElementById('fecha_entrega').value;
+        const persona_recibe = document.getElementById('persona_recibe').value;
         const res = await fetch('ajax/crear_documento.php',{
             method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ action:'crear_pedido', items, observaciones, fecha_entrega })
+            body: JSON.stringify({ action:'crear_pedido', items, observaciones, fecha_entrega, direccion_entrega_id: direccion_id, persona_recibe })
         });
         const data = await res.json();
         if(data.success){
@@ -497,6 +600,9 @@ document.getElementById('btnGenerarPedido').addEventListener('click', async ()=>
         }
     }catch(e){ console.error(e); renderCart(); }
 })();
+
+// Cargar direcciones al inicio
+cargarDireccionesCliente();
 
 // Inicial: cargar algunos productos sugeridos
 buscarProductos();

@@ -16,6 +16,8 @@ $descuento_porcentaje = isset($input['descuento_porcentaje']) ? floatval($input[
 $descuento_porcentaje = max(0.0, min(100.0, $descuento_porcentaje));
 $observaciones = isset($input['observaciones']) ? trim((string)$input['observaciones']) : null;
 $fecha_entrega = isset($input['fecha_entrega']) ? trim((string)$input['fecha_entrega']) : '';
+$direccion_entrega_id = isset($input['direccion_entrega_id']) ? (int)$input['direccion_entrega_id'] : null;
+$persona_recibe = isset($input['persona_recibe']) ? trim((string)$input['persona_recibe']) : null;
 
 require_once '../../config/database.php';
 $pdo = getConnection();
@@ -124,9 +126,9 @@ try {
 
     if ($action === 'crear_cotizacion') {
         $numero = 'COT-' . date('Ymd') . '-' . str_pad((string)rand(1,9999), 4, '0', STR_PAD_LEFT);
-    $sql = "INSERT INTO pedidos (numero_documento, cliente_id, empleado_id, estado, fecha_pedido, fecha_entrega_estimada, subtotal, descuento_porcentaje, descuento_total, impuestos_total, total, observaciones, created_at, updated_at) VALUES (?,?,NULL,'borrador',NOW(),?, ?,?,?,?,?,?,NOW(),NOW())";
+    $sql = "INSERT INTO pedidos (numero_documento, cliente_id, empleado_id, estado, fecha_pedido, fecha_entrega_estimada, direccion_entrega_id, subtotal, descuento_porcentaje, descuento_total, impuestos_total, total, observaciones, created_at, updated_at) VALUES (?,?,NULL,'borrador',NOW(),?,?, ?,?,?,?,?,?,NOW(),NOW())";
     $stmt = $pdo->prepare($sql);
-    $ok = $stmt->execute([$numero, $cliente_id, $fecha_entrega, $subtotal, $descuento_porcentaje, $descuento_total, $impuestos_total, $total, $observaciones]);
+    $ok = $stmt->execute([$numero, $cliente_id, $fecha_entrega, $direccion_entrega_id, $subtotal, $descuento_porcentaje, $descuento_total, $impuestos_total, $total, $observaciones]);
         if (!$ok) throw new Exception('No se pudo crear la cotización');
         $pedido_id = (int)$pdo->lastInsertId();
 
@@ -143,9 +145,9 @@ try {
 
     if ($action === 'crear_pedido') {
         $numero = 'PED-' . date('Ymd') . '-' . str_pad((string)rand(1,9999), 4, '0', STR_PAD_LEFT);
-    $sql = "INSERT INTO pedidos (numero_documento, cliente_id, empleado_id, estado, fecha_pedido, fecha_entrega_estimada, subtotal, descuento_porcentaje, descuento_total, impuestos_total, total, observaciones, created_at, updated_at) VALUES (?,?,NULL,'confirmado',NOW(),?, ?,?,?,?,?,?,NOW(),NOW())";
+    $sql = "INSERT INTO pedidos (numero_documento, cliente_id, empleado_id, estado, fecha_pedido, fecha_entrega_estimada, direccion_entrega_id, subtotal, descuento_porcentaje, descuento_total, impuestos_total, total, observaciones, created_at, updated_at) VALUES (?,?,NULL,'confirmado',NOW(),?,?, ?,?,?,?,?,?,NOW(),NOW())";
     $stmt = $pdo->prepare($sql);
-    $ok = $stmt->execute([$numero, $cliente_id, $fecha_entrega, $subtotal, $descuento_porcentaje, $descuento_total, $impuestos_total, $total, $observaciones]);
+    $ok = $stmt->execute([$numero, $cliente_id, $fecha_entrega, $direccion_entrega_id, $subtotal, $descuento_porcentaje, $descuento_total, $impuestos_total, $total, $observaciones]);
         if (!$ok) throw new Exception('No se pudo crear el pedido');
         $pedido_id = (int)$pdo->lastInsertId();
 
