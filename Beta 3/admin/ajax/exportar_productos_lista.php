@@ -35,6 +35,8 @@ try {
                 p.descripcion,
                 g.nombre as grupo,
                 p.precio,
+                p.unidad_medida,
+                p.unidad_empaque,
                 p.created_at as fecha_creacion
             FROM productos p
             LEFT JOIN grupos_productos g ON p.grupo_id = g.id
@@ -86,13 +88,15 @@ function exportarPDF($productos) {
     $pdf->Ln(5);
     
     // Headers de tabla
-    $pdf->SetFont('Arial', 'B', 9);
+    $pdf->SetFont('Arial', 'B', 8);
     $pdf->SetFillColor(230, 230, 230);
     
-    $pdf->Cell(35, 8, utf8_decode('Código'), 1, 0, 'C', true);
-    $pdf->Cell(85, 8, utf8_decode('Descripción'), 1, 0, 'C', true);
-    $pdf->Cell(45, 8, 'Grupo', 1, 0, 'C', true);
-    $pdf->Cell(25, 8, 'Precio', 1, 1, 'C', true);
+    $pdf->Cell(25, 8, utf8_decode('Código'), 1, 0, 'C', true);
+    $pdf->Cell(65, 8, utf8_decode('Descripción'), 1, 0, 'C', true);
+    $pdf->Cell(35, 8, 'Grupo', 1, 0, 'C', true);
+    $pdf->Cell(23, 8, 'Precio', 1, 0, 'C', true);
+    $pdf->Cell(20, 8, 'U. Medida', 1, 0, 'C', true);
+    $pdf->Cell(22, 8, 'U. Empaque', 1, 1, 'C', true);
     
     // Datos
     $pdf->SetFont('Arial', '', 8);
@@ -104,28 +108,34 @@ function exportarPDF($productos) {
             $pdf->AddPage();
             
             // Repetir headers
-            $pdf->SetFont('Arial', 'B', 9);
+            $pdf->SetFont('Arial', 'B', 8);
             $pdf->SetFillColor(230, 230, 230);
-            $pdf->Cell(35, 8, utf8_decode('Código'), 1, 0, 'C', true);
-            $pdf->Cell(85, 8, utf8_decode('Descripción'), 1, 0, 'C', true);
-            $pdf->Cell(45, 8, 'Grupo', 1, 0, 'C', true);
-            $pdf->Cell(25, 8, 'Precio', 1, 1, 'C', true);
-            $pdf->SetFont('Arial', '', 8);
+            $pdf->Cell(25, 8, utf8_decode('Código'), 1, 0, 'C', true);
+            $pdf->Cell(65, 8, utf8_decode('Descripción'), 1, 0, 'C', true);
+            $pdf->Cell(35, 8, 'Grupo', 1, 0, 'C', true);
+            $pdf->Cell(23, 8, 'Precio', 1, 0, 'C', true);
+            $pdf->Cell(20, 8, 'U. Medida', 1, 0, 'C', true);
+            $pdf->Cell(22, 8, 'U. Empaque', 1, 1, 'C', true);
+            $pdf->SetFont('Arial', '', 7);
         }
         
-        $codigo = substr($producto['codigo'], 0, 25);
-        $descripcion = strlen($producto['descripcion']) > 52 
-            ? substr($producto['descripcion'], 0, 49) . '...' 
+        $codigo = substr($producto['codigo'], 0, 18);
+        $descripcion = strlen($producto['descripcion']) > 40 
+            ? substr($producto['descripcion'], 0, 37) . '...' 
             : $producto['descripcion'];
-        $grupo = strlen($producto['grupo'] ?? 'Sin grupo') > 28
-            ? substr($producto['grupo'] ?? 'Sin grupo', 0, 25) . '...'
+        $grupo = strlen($producto['grupo'] ?? 'Sin grupo') > 22
+            ? substr($producto['grupo'] ?? 'Sin grupo', 0, 19) . '...'
             : ($producto['grupo'] ?? 'Sin grupo');
         $precio = '$' . number_format($producto['precio'], 2);
+        $unidad_medida = $producto['unidad_medida'] ?? 'und';
+        $unidad_empaque = $producto['unidad_empaque'] ?? 1;
         
-        $pdf->Cell(35, 6, utf8_decode($codigo), 1, 0, 'L');
-        $pdf->Cell(85, 6, utf8_decode($descripcion), 1, 0, 'L');
-        $pdf->Cell(45, 6, utf8_decode($grupo), 1, 0, 'L');
-        $pdf->Cell(25, 6, $precio, 1, 1, 'R');
+        $pdf->Cell(25, 6, utf8_decode($codigo), 1, 0, 'L');
+        $pdf->Cell(65, 6, utf8_decode($descripcion), 1, 0, 'L');
+        $pdf->Cell(35, 6, utf8_decode($grupo), 1, 0, 'L');
+        $pdf->Cell(23, 6, $precio, 1, 0, 'R');
+        $pdf->Cell(20, 6, utf8_decode($unidad_medida), 1, 0, 'C');
+        $pdf->Cell(22, 6, $unidad_empaque, 1, 1, 'C');
         
         $contador++;
     }
@@ -172,7 +182,7 @@ function exportarXLSX($productos) {
     fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
     
     // Headers
-    $headers = ['Código', 'Descripción', 'Grupo', 'Precio'];
+    $headers = ['Código', 'Descripción', 'Grupo', 'Precio', 'Unidad Medida', 'Unidad Empaque'];
     fputcsv($output, $headers, ';');
     
     // Datos
@@ -181,7 +191,9 @@ function exportarXLSX($productos) {
             $producto['codigo'],
             $producto['descripcion'],
             $producto['grupo'] ?? 'Sin grupo',
-            '$' . number_format($producto['precio'], 2, '.', ',')
+            '$' . number_format($producto['precio'], 2, '.', ','),
+            $producto['unidad_medida'] ?? 'und',
+            $producto['unidad_empaque'] ?? 1
         ];
         fputcsv($output, $fila, ';');
     }
