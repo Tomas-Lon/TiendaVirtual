@@ -1,0 +1,14 @@
+﻿Número;Fecha;Cliente;Estado;Total
+PED-20251201-6126;"30/11/2025 19:55";"Cliente de Prueba";Confirmado;267171,66
+PED-20251130-9683;"29/11/2025 22:39";"Cliente de Prueba";Confirmado;267171,66
+PED-20251128-144535;"28/11/2025 08:45";"Suministros Industriales Cali S.A.S.";Confirmado;648423,76
+PED-20251128-142406;"28/11/2025 08:24";"Distribuidora de Tuberías del Caribe";Confirmado;379311,88
+PED-20251128-141706;"28/11/2025 08:17";"Construcciones Valle del Cauca";Confirmado;13276622,24
+PED-20251125-3764;"24/11/2025 18:19";"Cliente de Prueba";Entregado;12773268,31
+COT-20251125-5485;"24/11/2025 18:19";"Cliente de Prueba";Confirmado;12773268,31
+PED-20251121-3397;"21/11/2025 15:10";"Cliente de Prueba";Enviado;260436,24
+PED-20251115-8589;"15/11/2025 13:11";"Cliente de Prueba";Confirmado;376273,84
+PED-20251115-8879;"15/11/2025 00:00";"Cliente de Prueba";Confirmado;260436,24
+PED-20251111-5767;"11/11/2025 00:00";"Cliente de Prueba";Confirmado;929294,56
+PED-20251111-2332;"11/11/2025 00:00";"Cliente de Prueba";Confirmado;598358,16
+PED-20251111-7717;"11/11/2025 00:00";"Cliente de Prueba";Confirmado;324211,88
